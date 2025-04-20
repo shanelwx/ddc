@@ -24,7 +24,7 @@ library(grid)
 Refer to QRG in BHP sharepoint
 
 ## <ins>Appendix</ins>
-- A rolling record is being kept of the outputs everytime the script is being ran. This is managed by leeshanea in cleaning up duplicates from time to time. This rolling record is an evoloving datasource that can be used for analysis and time series scatter plots for measure of performance
+- A rolling record is being kept of the outputs everytime the script is being ran. This is managed by leeshanea in cleaning up duplicates (from multiple re-runs per stint due to errors found after the report was produced) periodically. This rolling record is an evoloving datasource that can be used for analysis and time series scatter plots for measure of performance
 ```
 K:\Drillhole Lifecycle\DDC\R\csv\database
 ```
