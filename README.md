@@ -6,7 +6,7 @@ This process was intially ran with a two part script. The first part produced th
 Each week, the drilling contractors send out projections of the active drill holes to the geology department to track the drill holes progress and spatial accuracy (to target and plan). This compliance to plan (C2D) report is generated from the geology department as a formal document to inform the drilling contractors, operations department and any other stakeholders on the progress and drill tracking compliance of each rig/drill hole. 
 
 ## <ins>First time setup for Oak Dam Geologists</ins>
-After installing Rstudio for the first time, an initial manual install for packages may need happn as the install and load packages FUN might not work. Enter the below chunk into the console. The is a run-once-per-setup
+After installing Rstudio for the first time, an initial manual install for packages may need happn as the install and load packages FUN might not work. Enter the below chunk into the console. The is a run-once-per-setup process
 ```
 packages <- c("readxl","lubridate","tidyverse","ggplot2", "plotly", "tictoc", "janitor", "gridExtra", "grid")
 install.packages(packages)
