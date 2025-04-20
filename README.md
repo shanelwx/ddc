@@ -24,7 +24,6 @@ library(grid)
 Refer to QRG in BHP sharepoint
 
 ## <ins>Appendix</ins>
-Ruler in Leapfrog vs distancereport.pdf values
 -	The distancereport.pdf values are the same (with exception to rounding) to using the ruler in Leapfrog to measure the smallest distance between the drill trace and the string
 -	Section 2 involves the de-surveying chunk of the code which uses the minimum curvature method. Online material showed two formulas for the method. It is to be noted the formula used in the code is different:
   ![image](https://github.com/user-attachments/assets/1325ea2c-425c-4c7f-9b6f-c97eb1b77774)
