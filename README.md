@@ -24,13 +24,18 @@ library(grid)
 Refer to QRG in BHP sharepoint
 
 ## <ins>Appendix</ins>
+- A rolling record is being kept of the outputs everytime the script is being ran. This is managed by leeshanea in cleaning up duplicates from time to time. This rolling record is an evoloving datasource that can be used for analysis and time series scatter plots for measure of performance
+```
+K:\Drillhole Lifecycle\DDC\R\csv\database
+```
 -	The distancereport.pdf values are the same (with exception to rounding) to using the ruler in Leapfrog to measure the smallest distance between the drill trace and the string
 -	Section 2 involves the de-surveying chunk of the code which uses the minimum curvature method. Online material showed two formulas for the method. It is to be noted the formula used in the code is different:
   ![image](https://github.com/user-attachments/assets/1325ea2c-425c-4c7f-9b6f-c97eb1b77774)
 - Section 2's de-surveying also interpolates intensely between the converted survey - coordinates data to create as many points (increased resolution) for a minimum distance to target to be measured as "accurately" as possible. However due to inconsistent distance between each survey station, writing code to interpolate between stations is complicated (non-divisble lengths between stations)
 
 ### <ins>Used calculations</ins>
-- De-survey without any ratio factors applied as per minimum curvature method
+- De-survey without the ratio factors applied that was seen in some minimum curvature method 
+- Other than including the use of the ratio factor, no further improvement can be done unless advised
 ```
 desurv <- temp_colsurv2 %>%
     mutate(northing = (length/2) * (sin(rad(lag(inclination, default = inclination[1]))) # North
@@ -50,6 +55,7 @@ desurv <- temp_colsurv2 %>%
 
 ## WIP
 - I do not even remember how I came up with this
+- Can definitely be improved from memory of how it was built. As the number of interpolated stations is a constant value and the meter range between the interpolated stations is dependent on the meter range between the de-surveyed stations. When the meter range between the de-surveyed stations is a non-divisible number or a non-whole number, it all becomes wonky
 ```
 # Interpolation
   for (i in 1:nrow(desurv)){
