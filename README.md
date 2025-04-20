@@ -1,5 +1,5 @@
 # Drillhole Deviation Calculator (DDC)
-This process was intially ran with a two part script. The first part produced the necessary inputs for Leapfrog to assist in de-surveying, whilst the second part produced the necessary graphs and outputs used in the final C2D report that is to be sent out to the contractors. The process eventually evolved (2 part merged into 1, with vectorization) to remove the tedious handling of data between scripts and Leapfrog to cater to the usage of the team. This created minor quality issues with the interpolation of de-surveyed drill traces (see appendix/used calculations)
+This process was intially ran with a two part script. The first part produced the necessary inputs for Leapfrog to assist in de-surveying, whilst the second part produced the necessary graphs and outputs used in the final C2D report that is to be sent out to the contractors. The process eventually evolved (2 part merged into 1, with vectorization) to remove the tedious handling of data between scripts and Leapfrog to cater to the usage by the team. This created minor quality issues with the interpolation of de-surveyed drill traces (see appendix/used calculations)
 ![image](https://github.com/user-attachments/assets/cff7426c-1453-4c4d-954d-ad7d7af8da51)
 
 ## <ins>Purpose</ins>
