@@ -376,7 +376,7 @@ distancereport <- left_join(target_deviation, distance_remaining, by = "target_i
   select(-distancetotarget.y) %>%
   relocate(remain_dist, .before = proj_dis_to_targ)
 
-# Initialize pdf file
+## Initialize pdf file
 pdf(file = paste0(wd_export, "/DistanceReport.pdf"))
 grid.table(distancereport)
 dev.off()
@@ -508,7 +508,12 @@ temp_dmy <- suppressWarnings(dmy(distance_report$append_date)) # Lubridate!
 temp_ymd <- suppressWarnings(ymd(distance_report$append_date)) # Lubridate! the other way
 distance_report <- distance_report %>%
   mutate(append_date = coalesce(temp_dmy, temp_ymd))
-date_filter <- today() - 182 # 60 days back
+
+# Figuring out which financial year we are in
+fy <- make_date(year = year(today()), month = 7, day = 1)
+fy_other <- make_date(year = year(today()) - 1, month = 7, day = 1)
+fy_start <- as.Date(((ifelse(today() >= fy, fy, fy_other))), origin = "1970/1/1")
+date_filter <- fy_start 
 
 distance_report <- distance_report %>%
   mutate(index = 1:nrow(distance_report_db)) %>%
@@ -535,25 +540,40 @@ distance_report_for <- distance_report %>%
   filter(remain_dist == 0) # Requested by ops to change graph to show only results of hitting targets
 distance_report_tld <- distance_report %>%
   filter(contractor == "TLD") %>%
-  filter(remain_dist == 0) # Requested by ops to cange graph to show only results of hitting targets
+  filter(remain_dist == 0) # Requested by ops to change graph to show only results of hitting targets
 
 # Stats and leaderboards for drilling hitting targets < 20
 distance_report_merge <- rbind(distance_report_for, distance_report_tld) %>%
   mutate(unique_key_2 = paste0(target_id, proj_dis_to_targ)) %>%
   distinct(unique_key_2, .keep_all = T) %>%
   distinct(target_id, .keep_all = T)
-leaderboard_for <- distance_report_merge %>%
+leaderboard_for_full <- distance_report_merge %>%
   filter(contractor == "FOR") %>%
-  select(-unique_key, -unique_key_2, -index)
-summary_for <- summary(leaderboard_for$proj_dis_to_targ)
-leaderboard_tld <- distance_report_merge %>%
+  select(-unique_key, -unique_key_2, -index) %>%
+  group_by(rig_id) %>%
+  arrange(desc(append_date), .by_group = T) %>%
+  ungroup(rig_id)
+summary_for <- summary(leaderboard_for_full$proj_dis_to_targ)
+leaderboard_tld_full <- distance_report_merge %>%
   filter(contractor == "TLD") %>%
-  select(-unique_key, -unique_key_2, -index)
-summary_tld <- summary(leaderboard_tld$proj_dis_to_targ)
+  select(-unique_key, -unique_key_2, -index) %>%
+  group_by(rig_id) %>%
+  arrange(desc(append_date), .by_group = T) %>%
+  ungroup(rig_id)
+summary_tld <- summary(leaderboard_tld_full$proj_dis_to_targ)
 
-successrate_for <- round(sum(leaderboard_for$proj_dis_to_targ <= 20) / count(leaderboard_for), digits = 2)
-successrate_tld <- round(sum(leaderboard_tld$proj_dis_to_targ <= 20) / count(leaderboard_tld), digits = 2)
+# Create summarized leaderboard to copy onto C2D slide
+leaderboard_for <- leaderboard_for_full %>%
+  select(bhid, proj_dis_to_targ, append_date, rig_id) %>%
+  rename(distance = proj_dis_to_targ, date = append_date)
+leaderboard_tld <- leaderboard_tld_full %>%
+  select(bhid, proj_dis_to_targ, append_date, rig_id) %>%
+  rename(distance = proj_dis_to_targ, date = append_date)
 
+successrate_for <- round(sum(leaderboard_for_full$proj_dis_to_targ <= 20) / count(leaderboard_for_full), digits = 2)
+successrate_tld <- round(sum(leaderboard_tld_full$proj_dis_to_targ <= 20) / count(leaderboard_tld_full), digits = 2)
+
+print(paste0("Contractor distance from target < 20m since: ", date_filter))
 print(paste0("Foraco success rate: ", successrate_for * 100, "%"))
 print(summary_for)
 print(paste0("Titeline success rate: ", successrate_tld * 100, "%"))
@@ -562,6 +582,8 @@ print(summary_tld)
 setwd(wd_export)
 write.csv(leaderboard_for, "leaderboard_for.csv", row.names = F)
 write.csv(leaderboard_tld, "leaderboard_tld.csv", row.names = F)
+write.csv(leaderboard_for_full, "leaderboard_for_full.csv", row.names = F)
+write.csv(leaderboard_tld_full, "leaderboard_tld_full.csv", row.names = F)
 
 # Plot
 plot_for <- distance_report_for %>%
@@ -577,8 +599,6 @@ plot_for <- distance_report_for %>%
 
 setwd (wd_export) # Change wd to export
 ggsave(file = "DistanceScatterPlot_Foraco.png", height = 3, width = 7, dpi = 320) # Save plot
-setwd("M:/Geology/fontmi/Shanes script outputs") # A cop-i for font-i
-ggsave(file = "DistanceScatterPlot_Foraco.png", height = 8, width = 5, dpi = 320) # Portrait for fonti
 
 plot_tld <- distance_report_tld %>%
   ggplot(aes(x = append_date, y = proj_dis_to_targ, color = rig_id, group = rig_id)) +
@@ -593,8 +613,6 @@ plot_tld <- distance_report_tld %>%
 
 setwd (wd_export) # Change wd to export
 ggsave(file = "DistanceScatterPlot_Titeline.png", height = 3, width = 7, dpi = 320) # Save plot
-setwd("M:/Geology/fontmi/Shanes script outputs") # A cop-i for font-i
-ggsave(file = "DistanceScatterPlot_Titeline.png", height = 8, width = 5, dpi = 320) # Portrait for fonti
 
 toc()
 print("All done!, Thank you!")
