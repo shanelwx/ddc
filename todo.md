@@ -1,0 +1,2 @@
+# To do
+Automate DDC R output for historical performance for the current financial year, table export still needs manual entry into Weekly Drilling report. Maybe export photo of tables to directly copy and paste in?
