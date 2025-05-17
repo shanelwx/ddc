@@ -570,6 +570,19 @@ leaderboard_tld <- leaderboard_tld_full %>%
   select(bhid, proj_dis_to_targ, append_date, rig_id) %>%
   rename(distance = proj_dis_to_targ, date = append_date)
 
+# easy paste leaderboard to copy onto C2D slide
+leaderboard <- rbind(leaderboard_for, leaderboard_tld)
+
+pdf(file = paste0(wd_export, "/leaderboard_images.pdf"))
+
+for (i in unique(leaderboard$rig_id)){
+  leaderboard_data <- leaderboard %>%
+    filter(leaderboard$rig_id == i)
+  printed_leaderboard <- grid.table(leaderboard_data)
+  grid.newpage()
+}
+dev.off()
+
 successrate_for <- round(sum(leaderboard_for_full$proj_dis_to_targ <= 20) / count(leaderboard_for_full), digits = 2)
 successrate_tld <- round(sum(leaderboard_tld_full$proj_dis_to_targ <= 20) / count(leaderboard_tld_full), digits = 2)
 
